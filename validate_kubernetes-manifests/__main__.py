@@ -1,14 +1,15 @@
+import time
+from argparse import ArgumentParser
 from os import fdopen
 from pathlib import Path
 from subprocess import run, PIPE
-from argparse import ArgumentParser
-from junit_xml import TestSuite, TestCase, to_xml_report_string, to_xml_report_file
+from tempfile import mkstemp
+
 # Kubernetes seems to use yaml 1.1 (https://github.com/kubernetes/kubernetes/issues/34146)
 # Should switch to ruamel.yaml if it switches to yaml 1.2 as explained here
 # https://stackoverflow.com/questions/1773805/how-can-i-parse-a-yaml-file-in-python/38922434#38922434
 import yaml
-import time
-from tempfile import mkstemp
+from junit_xml import TestSuite, TestCase, to_xml_report_string, to_xml_report_file
 
 
 def apply_manifests(manifests: str, output_file_path: str):
