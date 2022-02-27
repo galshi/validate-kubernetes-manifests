@@ -38,8 +38,8 @@ def apply_manifests(manifests: str, output_file_path: str):
                                                   elapsed_time, stdout.decode('utf-8'), stderr.decode('utf-8')))
 
     if output_file_path:
-        with open(output_file_path, 'w') as f:
-            to_xml_report_file(f, test_suites, prettyprint=True)
+        with open(output_file_path, 'w') as _file:
+            to_xml_report_file(_file, test_suites, prettyprint=True)
     else:
         print(to_xml_report_string(test_suites, prettyprint=True))
 
