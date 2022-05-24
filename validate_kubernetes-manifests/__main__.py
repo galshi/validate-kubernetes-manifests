@@ -12,7 +12,7 @@ import yaml
 from junit_xml import TestSuite, TestCase, to_xml_report_string, to_xml_report_file
 
 
-def apply_manifests(manifests: str, output_file_path: str):
+def apply_manifests(manifests: str, output_file_path: str, api_client_executable_name: str):
     test_suites = []
 
     for manifest in manifests:
@@ -28,7 +28,7 @@ def apply_manifests(manifests: str, output_file_path: str):
                 _file.write(yaml.dump(_yaml))
 
             start_time = time.perf_counter()
-            process = run(['oc', 'apply', '--dry-run=server', '--server-side=true', '-f', file_path],
+            process = run([api_client_executable_name, 'apply', '--dry-run=server', '--server-side=true', '-f', file_path],
                           stdout=PIPE, stderr=PIPE)
             stdout = process.stdout
             stderr = process.stderr
@@ -50,10 +50,15 @@ def main():
                         help='Manifests to test', required=True)
     parser.add_argument('-o', '--output-file', dest='output_file',
                         help='The output file path', required=False)
+    parser.add_argument('--platform',
+                    choices=['openshift', 'kubernetes'],
+                    help='The platform to test against')
 
     args = parser.parse_args()
+    
+    api_client_executable_name = {'openshift': 'oc', 'kubernetes': 'kubectl'}[args.platform]
 
-    apply_manifests(args.manifests, args.output_file)
+    apply_manifests(args.manifests, args.output_file, api_client_executable_name)
 
 
 if __name__ == "__main__":
